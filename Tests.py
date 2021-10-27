@@ -18,7 +18,7 @@ class TestDatabase(unittest.TestCase):
      
     def test_can_load_tweets_mocked_db(self):
         self.db.tweets = ["tweet1", "tweet2"]
-        self.assertEqual(self.db.load_tweets().count, 2)
+        self.assertEqual(len(self.db.load_tweets()), 2)
 
 
 class TestServer(unittest.TestCase):

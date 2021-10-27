@@ -12,6 +12,8 @@ class Database:
         self.tweets = []
 
     def save_tweets(self, new_tweets):
+        if type(new_tweets) is not list:
+            return
         self.tweets.extend(new_tweets)
 
     def load_tweets(self):

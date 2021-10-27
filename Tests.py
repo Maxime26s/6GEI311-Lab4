@@ -25,6 +25,12 @@ class TestDatabase(unittest.TestCase):
         self.db.save_tweets([{"tweet1": "test"}, {"tweet2": "test"}])
         self.assertEqual(len(self.db.tweets), 2)
 
+    def test_save_invalid_tweets(self):
+        self.assertEqual(len(self.db.tweets), 0)
+        self.db.save_tweets(5)
+        self.db.save_tweets("invalid tweet")
+        self.assertEqual(len(self.db.tweets), 0)
+
 class TestServer(unittest.TestCase):
     pass
 

@@ -1,4 +1,4 @@
-import requests
+import pip._vendor.requests as requests
 
 BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAACelVAEAAAAAOiyvYHxASNLJyh2jenBUHxzjC8g%3DPFMVueCi5yMa2xYqcSKaXlBHEo1b9eRDHf8zAjCeHi0IjdLUd9'
 

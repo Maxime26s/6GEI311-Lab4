@@ -1,7 +1,6 @@
 import unittest
 from Server import Database
 
-
 class TestDatabase(unittest.TestCase):
     def setUp(self):
         self.db = Database()
@@ -9,8 +8,9 @@ class TestDatabase(unittest.TestCase):
     def tearDown(self):
         self.db = None
 
-    def test_can_load_tweets(self):
-        self.assertFalse()
+    def test_load_tweets_returns_empty_array_on_error(self):
+        self.db.tweets = 5
+        self.assertTrue(type(self.db.tweets) is list)
 
 
 class TestServer(unittest.TestCase):
@@ -19,3 +19,6 @@ class TestServer(unittest.TestCase):
 
 class TestTwitterAPI(unittest.TestCase):
     pass
+
+if __name__ == '__main__':
+    unittest.main()

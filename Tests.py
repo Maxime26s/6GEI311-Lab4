@@ -10,7 +10,7 @@ class TestDatabase(unittest.TestCase):
 
     def test_load_tweets_returns_empty_array_on_error(self):
         self.db.tweets = 5
-        self.assertTrue(type(self.db.tweets) is list)
+        self.assertTrue(type(self.db.load_tweets()) is list)
 
 
 class TestServer(unittest.TestCase):

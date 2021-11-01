@@ -45,6 +45,13 @@ class TestServer(unittest.TestCase):
             request_handler.do_GET(request_handler)
             self.assertEqual("Search.html", request_handler.path)
 
+    def test_route_invalid_path(self):
+        with TCPServer(('', 8081), Lab4HTTPRequestHandler) as tcp_server:
+            request_handler = tcp_server.RequestHandlerClass
+            request_handler.path = "/fdsafdsa"
+            request_handler.do_GET(request_handler)
+            self.assertEqual("Search.html", request_handler.path)
+
 
 
 

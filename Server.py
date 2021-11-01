@@ -27,9 +27,11 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == '/':
-            self.route_search()
+            self.route_search(self)
         elif self.path.startswith('/queryTwitter'):
-            self.route_display
+            self.route_display(self)
+        else:
+            self.route_search(self)
 
     def route_search(self):
         self.path = 'Search.html'

@@ -34,6 +34,7 @@ class TestDatabase(unittest.TestCase):
         self.db.save_tweets("invalid tweet")
         self.assertEqual(len(self.db.tweets), 0)
 
+
 class TestServer(unittest.TestCase):
     def setUp(self):
         SimpleHTTPRequestHandler.do_GET = MagicMock(return_value=200)
@@ -51,8 +52,6 @@ class TestServer(unittest.TestCase):
             request_handler.path = "/fdsafdsa"
             request_handler.do_GET(request_handler)
             self.assertEqual("Search.html", request_handler.path)
-
-
 
 
 class TestTwitterAPI(unittest.TestCase):

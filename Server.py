@@ -27,11 +27,11 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == '/':
-            self.route_search(self)
+            self.route_search()
         elif self.path.startswith('/queryTwitter'):
-            self.route_display(self)
+            self.route_display()
         else:
-            self.route_search(self)
+            self.route_search()
 
     def route_search(self):
         self.path = 'Search.html'
@@ -47,6 +47,7 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url(data)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        print(json_response)
         tweets = json_response['data']
 
         # Assume that right here, we save the tweets into a SQL databases

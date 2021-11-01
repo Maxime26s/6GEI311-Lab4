@@ -3,6 +3,9 @@ from Server import Database, Lab4HTTPRequestHandler
 from socketserver import TCPServer
 from http.server import SimpleHTTPRequestHandler
 from unittest.mock import MagicMock
+from io import BytesIO as IO
+
+from TwitterAPI import TwitterAPI
 
 class TestDatabase(unittest.TestCase):
     def setUp(self):
@@ -35,27 +38,43 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(len(self.db.tweets), 0)
 
 
+class MockRequest(object):
+    def makefile(self, *args, **kwargs):
+        return IO(b"GET /")
+
+
+class MockServer(object):
+    def __init__(self, ip_port, Handler):
+        self.handler = Handler(MockRequest(), ip_port, self)
+
+
 class TestServer(unittest.TestCase):
     def setUp(self):
         SimpleHTTPRequestHandler.do_GET = MagicMock(return_value=200)
 
     def test_route_search(self):
-        with TCPServer(('', 8081), Lab4HTTPRequestHandler) as tcp_server:
-            request_handler = tcp_server.RequestHandlerClass
-            request_handler.path = "/"
-            request_handler.do_GET(request_handler)
-            self.assertEqual("Search.html", request_handler.path)
+        server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
+        server.handler.path = "/"
+        server.handler.do_GET()
+        self.assertEqual("Search.html", server.handler.path)
+
+    def test_route_display(self):
+        TwitterAPI.query_twitter_api = ""
+        server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
+        server.handler.path = "/queryTwitter"
+        server.handler.do_GET()
+        self.assertEqual("Display.html", server.handler.path)
 
     def test_route_invalid_path(self):
-        with TCPServer(('', 8081), Lab4HTTPRequestHandler) as tcp_server:
-            request_handler = tcp_server.RequestHandlerClass
-            request_handler.path = "/fdsafdsa"
-            request_handler.do_GET(request_handler)
-            self.assertEqual("Search.html", request_handler.path)
+        server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
+        server.handler.path = "/fdsafdsa"
+        server.handler.do_GET()
+        self.assertEqual("Search.html", server.handler.path)
 
 
 class TestTwitterAPI(unittest.TestCase):
     pass
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,4 +1,4 @@
-import pip._vendor.requests as requests
+import requests
 
 BEARER_TOKEN = 'AAAAAAAAAAAAAAAAAAAAACelVAEAAAAAOiyvYHxASNLJyh2jenBUHxzjC8g%3DPFMVueCi5yMa2xYqcSKaXlBHEo1b9eRDHf8zAjCeHi0IjdLUd9'
 
@@ -29,6 +29,3 @@ class TwitterAPI:
     def query_twitter_api(url, headers, params):
         response = requests.request('GET', url, headers=headers, params=params)
         return response.json()
-
-
-

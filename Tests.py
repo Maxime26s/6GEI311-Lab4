@@ -1,5 +1,8 @@
 import unittest
-from Server import Database
+from Server import Database, Lab4HTTPRequestHandler
+from socketserver import TCPServer
+from http.server import SimpleHTTPRequestHandler
+from unittest.mock import MagicMock
 
 class TestDatabase(unittest.TestCase):
     def setUp(self):
@@ -32,7 +35,17 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(len(self.db.tweets), 0)
 
 class TestServer(unittest.TestCase):
-    pass
+    def setUp(self):
+        SimpleHTTPRequestHandler.do_GET = MagicMock(return_value=200)
+
+    def test_route_search(self):
+        with TCPServer(('', 8081), Lab4HTTPRequestHandler) as tcp_server:
+            request_handler = tcp_server.RequestHandlerClass
+            request_handler.path = "/"
+            request_handler.do_GET(request_handler)
+            self.assertEqual("Search.html", request_handler.path)
+
+
 
 
 class TestTwitterAPI(unittest.TestCase):

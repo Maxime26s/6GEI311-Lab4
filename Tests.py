@@ -68,7 +68,7 @@ class TestServer(unittest.TestCase):
         TwitterAPI.query_twitter_api = Mock(return_value=json.loads(t))
         f.close()
         self.server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
-        self.server.handler.path = "/queryTwitter?query=aaa"
+        self.server.handler.path = "/queryTwitter?query=test"
         self.server.handler.do_GET()
         self.assertEqual("Display.html", self.server.handler.path)
 
@@ -78,12 +78,17 @@ class TestServer(unittest.TestCase):
         self.server.handler.do_GET()
         self.assertEqual("Search.html", self.server.handler.path)
 
-    def test_search_empty_query(self):
-        f = open("testdata.json")
-        t = f.read()
+    def test_invalid_json_data_returned(self):
         TwitterAPI.query_twitter_api = Mock(
             return_value="{'errors': [{'parameters': {'query': ['']}, 'message': \"Invalid 'query': ''. 'query' must be a non-empty string\"}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'}")
-        f.close()
+        self.server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
+        self.server.handler.path = "/queryTwitter"
+        self.server.handler.do_GET()
+        self.assertEqual("Display.html", self.server.handler.path)
+
+    def test_search_empty_query(self):
+        TwitterAPI.query_twitter_api = Mock(
+            return_value="{'errors': [{'parameters': {'query': ['']}, 'message': \"Invalid 'query': ''. 'query' must be a non-empty string\"}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'}")
         self.server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
         self.server.handler.path = "/queryTwitter?query="
         self.server.handler.do_GET()

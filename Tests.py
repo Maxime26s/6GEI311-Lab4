@@ -2,10 +2,11 @@ import unittest
 from Server import Database, Lab4HTTPRequestHandler
 from socketserver import TCPServer
 from http.server import SimpleHTTPRequestHandler
-from unittest.mock import MagicMock
+from unittest.mock import Mock
 from io import BytesIO as IO
-
+import json
 from TwitterAPI import TwitterAPI
+
 
 class TestDatabase(unittest.TestCase):
     def setUp(self):
@@ -21,7 +22,7 @@ class TestDatabase(unittest.TestCase):
 
     def test_can_load_tweets_default(self):
         self.assertEqual(self.db.load_tweets(), [])
-     
+
     def test_can_load_tweets_mocked_db(self):
         self.db.tweets = [{"tweet1": "test"}, {"tweet2": "test"}]
         self.assertEqual(len(self.db.load_tweets()), 2)
@@ -42,6 +43,9 @@ class MockRequest(object):
     def makefile(self, *args, **kwargs):
         return IO(b"GET /")
 
+    def sendall(self, *args, **kwargs):
+        return
+
 
 class MockServer(object):
     def __init__(self, ip_port, Handler):
@@ -50,26 +54,30 @@ class MockServer(object):
 
 class TestServer(unittest.TestCase):
     def setUp(self):
-        SimpleHTTPRequestHandler.do_GET = MagicMock(return_value=200)
+        SimpleHTTPRequestHandler.do_GET = Mock(return_value=200)
+        f = open("testdata.json")
+        t = f.read()
+        TwitterAPI.query_twitter_api = Mock(return_value=json.loads(t))
+        f.close()
+        self.server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
+
+    def tearDown(self):
+        self.server = None
 
     def test_route_search(self):
-        server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
-        server.handler.path = "/"
-        server.handler.do_GET()
-        self.assertEqual("Search.html", server.handler.path)
+        self.server.handler.path = "/"
+        self.server.handler.do_GET()
+        self.assertEqual("Search.html", self.server.handler.path)
 
     def test_route_display(self):
-        TwitterAPI.query_twitter_api = ""
-        server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
-        server.handler.path = "/queryTwitter"
-        server.handler.do_GET()
-        self.assertEqual("Display.html", server.handler.path)
+        self.server.handler.path = "/queryTwitter"
+        self.server.handler.do_GET()
+        self.assertEqual("Display.html", self.server.handler.path)
 
     def test_route_invalid_path(self):
-        server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
-        server.handler.path = "/fdsafdsa"
-        server.handler.do_GET()
-        self.assertEqual("Search.html", server.handler.path)
+        self.server.handler.path = "/fdsafdsa"
+        self.server.handler.do_GET()
+        self.assertEqual("Search.html", self.server.handler.path)
 
 
 class TestTwitterAPI(unittest.TestCase):

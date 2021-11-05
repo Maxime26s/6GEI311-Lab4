@@ -48,10 +48,13 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
         url, params = TwitterAPI.create_twitter_url(data)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         print(json_response)
-        tweets = json_response['data']
+        try:
+            tweets = json_response['data']
 
-        # Assume that right here, we save the tweets into a SQL databases
-        self.db.save_tweets(tweets)
+            # Assume that right here, we save the tweets into a SQL databases
+            self.db.save_tweets(tweets)
+        except:
+            print("Invalid json returned")
 
         # Assume that right here, we load the tweets from a SQL database
         all_tweets = self.db.load_tweets()

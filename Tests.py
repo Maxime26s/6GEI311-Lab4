@@ -186,29 +186,33 @@ class TestTwitterAPI(unittest.TestCase):
 
     def test_no_query(self):
         headers = TwitterAPI.create_twitter_headers()
-        url, params = TwitterAPI.create_twitter_url("data", 10)
-        params['query'] = None
+        url, params = TwitterAPI.create_twitter_url(None, 10)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'params': 'query' must not be None")
 
     def test_query_is_string(self):
         headers = TwitterAPI.create_twitter_headers()
-        url, params = TwitterAPI.create_twitter_url("data", 10)
-        params['query'] = 0
+        url, params = TwitterAPI.create_twitter_url(0, 10)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'params': 'query' must be a string")
 
     def test_empty_query(self):
         headers = TwitterAPI.create_twitter_headers()
-        url, params = TwitterAPI.create_twitter_url("data", 10)
-        params['query'] = ""
+        url, params = TwitterAPI.create_twitter_url("", 10)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'params': 'query' must not be empty")
 
-    def test_request_less_than_10_max_result(self):
+    def test_no_max_results(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url("data", None)
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'params': 'max_results' must not be None")
+
+    def test_request_less_than_10_max_results(self):
         self.request = requests.request
         requests.request = MagicMock(
             return_value={'errors': [{'parameters': {'max_results': ['9']}, 'message': 'The `max_results` query parameter value [9] is not between 10 and 100'}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'})
@@ -219,7 +223,7 @@ class TestTwitterAPI(unittest.TestCase):
                          "Invalid 'params': 'max_results' must be between 10 and 100")
         requests.request = self.request
 
-    def test_request_more_than_100_max_result(self):
+    def test_request_more_than_100_max_results(self):
         self.request = requests.request
         requests.request = MagicMock(
             return_value={'errors': [{'parameters': {'max_results': ['101']}, 'message': 'The `max_results` query parameter value [101] is not between 10 and 100'}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'})

@@ -63,6 +63,8 @@ class TwitterAPI:
 
         if params['max_results'] == None:
             return {'error': {'message': "Invalid 'params': 'max_results' must not be None"}}
+        if type(params['max_results']) is not int:
+            return {'error': {'message': "Invalid 'params': 'max_results' must be an int"}}
         if params['max_results'] < 10 or params['max_results'] > 100:
             return {'error': {'message': "Invalid 'params': 'max_results' must be between 10 and 100"}}
 

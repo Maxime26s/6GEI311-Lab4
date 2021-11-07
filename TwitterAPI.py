@@ -33,6 +33,7 @@ class TwitterAPI:
         if type(headers) is not dict:
             return {'error': {'message': "Invalid 'headers': 'headers' must not be a dictionary"}}
 
+        # Authorization verifications
         if headers['Authorization'] == None:
             return {'error': {'message': "Invalid 'headers': 'Authorization' must not be None"}}
         if type(headers['Authorization']) is not str:
@@ -54,6 +55,7 @@ class TwitterAPI:
         if type(params) is not dict:
             return {'error': {'message': "Invalid 'params': 'params' must be a dictionary"}}
 
+        # query verifications
         if params['query'] == None:
             return {'error': {'message': "Invalid 'params': 'query' must not be None"}}
         if type(params['query']) is not str:
@@ -61,6 +63,7 @@ class TwitterAPI:
         if params['query'] == "":
             return {'error': {'message': "Invalid 'params': 'query' must not be empty"}}
 
+        # max_results verifications
         if params['max_results'] == None:
             return {'error': {'message': "Invalid 'params': 'max_results' must not be None"}}
         if type(params['max_results']) is not int:

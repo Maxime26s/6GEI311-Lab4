@@ -148,14 +148,14 @@ class TestTwitterAPI(unittest.TestCase):
         url, params = TwitterAPI.create_twitter_url("data", 10)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
-                         "Invalid 'headers': 'headers' must have a bearer token")
+                         "Invalid 'headers': 'Authorization' must have a bearer token")
 
     def test_header_no_authorization(self):
         headers = {'Authorization': None}
         url, params = TwitterAPI.create_twitter_url("data", 10)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
-                         "Invalid 'headers': 'headers' must have a bearer token")
+                         "Invalid 'headers': 'Authorization' must not be None")
 
     def test_header_authorization_is_string(self):
         headers = {'Authorization': 0}

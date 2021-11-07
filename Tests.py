@@ -120,6 +120,7 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'headers': 'headers' must not be a dictionary")
 
+    # authorization tests
     def test_header_no_authorization(self):
         headers = {'Authorization': None}
         url, params = TwitterAPI.create_twitter_url("data", 10)
@@ -184,6 +185,7 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'params': 'params' must be a dictionary")
 
+    # query tests
     def test_no_query(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url(None, 10)
@@ -205,12 +207,20 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'params': 'query' must not be empty")
 
+    # max results tests
     def test_no_max_results(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url("data", None)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'params': 'max_results' must not be None")
+
+    def test_max_results_is_int(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url("data", "not an int")
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'params': 'max_results' must be an int")
 
     def test_request_less_than_10_max_results(self):
         self.request = requests.request

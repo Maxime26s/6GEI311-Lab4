@@ -29,6 +29,8 @@ class TwitterAPI:
     def query_twitter_api(url, headers, params):
         if headers == None:
             return {'error': {'message': "Invalid 'headers': 'headers' must not be empty"}}
+        if type(headers) is not dict:
+            return {'error': {'message': "Invalid 'headers': 'headers' must not be a dictionary"}}
         if len(headers['Authorization']) <= 7:
             return {'error': {'message': "Invalid 'headers': 'headers' must have a bearer token"}}
         if params['max_results'] < 10 or params['max_results'] > 100:

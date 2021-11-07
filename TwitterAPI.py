@@ -29,5 +29,7 @@ class TwitterAPI:
     def query_twitter_api(url, headers, params):
         if params['max_results'] < 10 or params['max_results'] > 100:
             return {'error': {'message': "Invalid 'max_results': 'max_results' must be between 10 and 100"}}
+        if headers == None:
+            return {'error': {'message': "Invalid 'headers': 'headers' must not be empty"}}
         response = requests.request('GET', url, headers=headers, params=params)
         return response.json()

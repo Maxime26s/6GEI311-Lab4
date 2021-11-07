@@ -134,7 +134,7 @@ class TestTwitterAPI(unittest.TestCase):
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         print(json_response)
         self.assertEqual(json_response['error']['message'],
-                         "Invalid 'header': 'header' must not be empty")
+                         "Invalid 'headers': 'headers' must not be empty")
 
 
 if __name__ == '__main__':

@@ -1,13 +1,12 @@
-import unittest
-
-import requests
-from requests.models import Response
-from Server import Database, Lab4HTTPRequestHandler
-from socketserver import TCPServer
-from http.server import SimpleHTTPRequestHandler
-from unittest.mock import MagicMock
-from io import BytesIO as IO
 import json
+import requests
+import unittest
+from http.server import SimpleHTTPRequestHandler
+from io import BytesIO as IO
+from Server import Database, Lab4HTTPRequestHandler
+from unittest.mock import MagicMock
+
+
 from TwitterAPI import BEARER_TOKEN, TwitterAPI
 
 

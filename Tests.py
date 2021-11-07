@@ -5,7 +5,7 @@ from requests.models import Response
 from Server import Database, Lab4HTTPRequestHandler
 from socketserver import TCPServer
 from http.server import SimpleHTTPRequestHandler
-from unittest.mock import Mock
+from unittest.mock import MagicMock
 from io import BytesIO as IO
 import json
 from TwitterAPI import TwitterAPI
@@ -57,7 +57,7 @@ class MockServer(object):
 
 class TestServer(unittest.TestCase):
     def setUp(self):
-        SimpleHTTPRequestHandler.do_GET = Mock(return_value=200)
+        SimpleHTTPRequestHandler.do_GET = MagicMock(return_value=200)
 
     def test_route_search(self):
         self.server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
@@ -68,12 +68,14 @@ class TestServer(unittest.TestCase):
     def test_route_display(self):
         f = open("testdata.json")
         t = f.read()
-        TwitterAPI.query_twitter_api = Mock(return_value=json.loads(t))
         f.close()
+        self.query_twitter_api = TwitterAPI.query_twitter_api
+        TwitterAPI.query_twitter_api = MagicMock(return_value=json.loads(t))
         self.server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
         self.server.handler.path = "/queryTwitter?query=test"
         self.server.handler.do_GET()
         self.assertEqual("Display.html", self.server.handler.path)
+        TwitterAPI.query_twitter_api = self.query_twitter_api
 
     def test_route_invalid_path(self):
         self.server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
@@ -82,42 +84,57 @@ class TestServer(unittest.TestCase):
         self.assertEqual("Search.html", self.server.handler.path)
 
     def test_invalid_json_data_returned(self):
-        TwitterAPI.query_twitter_api = Mock(
+        self.query_twitter_api = TwitterAPI.query_twitter_api
+        TwitterAPI.query_twitter_api = MagicMock(
             return_value={'errors': [{'parameters': {'query': ['']}, 'message': "Invalid 'query': ''. 'query' must be a non-empty string"}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'})
         self.server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
         self.server.handler.path = "/queryTwitter"
         self.server.handler.do_GET()
         self.assertEqual("Display.html", self.server.handler.path)
+        TwitterAPI.query_twitter_api = self.query_twitter_api
 
     def test_search_empty_query(self):
-        TwitterAPI.query_twitter_api = Mock(
+        self.query_twitter_api = TwitterAPI.query_twitter_api
+        TwitterAPI.query_twitter_api = MagicMock(
             return_value={'errors': [{'parameters': {'query': ['']}, 'message': "Invalid 'query': ''. 'query' must be a non-empty string"}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'})
         self.server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
         self.server.handler.path = "/queryTwitter?query="
         self.server.handler.do_GET()
         self.assertEqual("Display.html", self.server.handler.path)
+        TwitterAPI.query_twitter_api = self.query_twitter_api
 
 
 class TestTwitterAPI(unittest.TestCase):
     def test_request_less_than_10_max_result(self):
-        requests.request = Mock(
+        self.request = requests.request
+        requests.request = MagicMock(
             return_value={'errors': [{'parameters': {'max_results': ['9']}, 'message': 'The `max_results` query parameter value [9] is not between 10 and 100'}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'})
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url("data", 9)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        print(json_response)
         self.assertEqual(json_response['error']['message'],
-                         "Invalid 'max_results: 'max_results' must be between 10 and 100")
-        requests.request.reset_mock()
+                         "Invalid 'max_results': 'max_results' must be between 10 and 100")
+        requests.request = self.request
 
     def test_request_more_than_100_max_result(self):
-        requests.request = Mock(
+        self.request = requests.request
+        requests.request = MagicMock(
             return_value={'errors': [{'parameters': {'max_results': ['101']}, 'message': 'The `max_results` query parameter value [101] is not between 10 and 100'}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'})
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url("data", 101)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
-                         "Invalid 'max_results: 'max_results' must be between 10 and 100")
-        requests.request.reset_mock()
+                         "Invalid 'max_results': 'max_results' must be between 10 and 100")
+        requests.request = self.request
+
+    def test_request_no_header(self):
+        headers = None
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        print(json_response)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'header': 'header' must not be empty")
 
 
 if __name__ == '__main__':

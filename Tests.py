@@ -155,7 +155,7 @@ class TestTwitterAPI(unittest.TestCase):
         url = 0
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
-                         "Invalid 'url': 'url' must not be a string")
+                         "Invalid 'url': 'url' must be a string")
 
     def test_empty_url(self):
         headers = TwitterAPI.create_twitter_headers()

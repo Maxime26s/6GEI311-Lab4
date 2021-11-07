@@ -27,6 +27,7 @@ class TwitterAPI:
 
     @staticmethod
     def query_twitter_api(url, headers, params):
+        # header verifications
         if headers == None:
             return {'error': {'message': "Invalid 'headers': 'headers' must not be empty"}}
         if type(headers) is not dict:
@@ -39,12 +40,17 @@ class TwitterAPI:
         if len(headers['Authorization']) <= 7:
             return {'error': {'message': "Invalid 'headers': 'Authorization' must have a bearer token"}}
 
+        # url verifications
+        if url == None:
+            return {'error': {'message': "Invalid 'url': 'url' must not be None"}}
+        if type(url) is not str:
+            return {'error': {'message': "Invalid 'url': 'url' must be a string"}}
+        if url == "":
+            return {'error': {'message': "Invalid 'url': 'url' must not be empty"}}
+
+        # params verifications
         if params['max_results'] < 10 or params['max_results'] > 100:
             return {'error': {'message': "Invalid 'max_results': 'max_results' must be between 10 and 100"}}
 
-        if url == None:
-            return {'error': {'message': "Invalid 'url': 'url' must not be None"}}
-        if url == "":
-            return {'error': {'message': "Invalid 'url': 'url' must not be empty"}}
         response = requests.request('GET', url, headers=headers, params=params)
         return response.json()

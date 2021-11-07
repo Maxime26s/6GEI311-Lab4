@@ -1,4 +1,6 @@
 import unittest
+
+import requests
 from Server import Database, Lab4HTTPRequestHandler
 from socketserver import TCPServer
 from http.server import SimpleHTTPRequestHandler
@@ -97,7 +99,7 @@ class TestServer(unittest.TestCase):
 
 class TestTwitterAPI(unittest.TestCase):
     def test_request_less_than_10_max_result(self):
-        TwitterAPI.query_twitter_api = Mock(
+        requests.request = Mock(
             return_value={'errors': [{'parameters': {'max_results': ['9']}, 'message': 'The `max_results` query parameter value [9] is not between 10 and 100'}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'})
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url("data", 9)

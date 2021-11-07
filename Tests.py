@@ -200,6 +200,14 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'params': 'query' must be a string")
 
+    def test_empty_query(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        params['query'] = ""
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'params': 'query' must not be empty")
+
     def test_request_less_than_10_max_result(self):
         self.request = requests.request
         requests.request = MagicMock(

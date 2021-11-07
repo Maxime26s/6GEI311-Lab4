@@ -184,6 +184,14 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'params': 'params' must be a dictionary")
 
+    def test_no_keyword(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        params['keyword'] = None
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'params': 'params' must be a dictionary")
+
     def test_request_less_than_10_max_result(self):
         self.request = requests.request
         requests.request = MagicMock(

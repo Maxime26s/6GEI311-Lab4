@@ -33,5 +33,7 @@ class TwitterAPI:
             return {'error': {'message': "Invalid 'headers': 'headers' must have a bearer token"}}
         if params['max_results'] < 10 or params['max_results'] > 100:
             return {'error': {'message': "Invalid 'max_results': 'max_results' must be between 10 and 100"}}
+        if url == "":
+            return {'error': {'message': "Invalid 'url': 'url' must not be empty"}}
         response = requests.request('GET', url, headers=headers, params=params)
         return response.json()

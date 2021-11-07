@@ -50,7 +50,7 @@ class TwitterAPI:
 
         # params verifications
         if params['max_results'] < 10 or params['max_results'] > 100:
-            return {'error': {'message': "Invalid 'max_results': 'max_results' must be between 10 and 100"}}
+            return {'error': {'message': "Invalid 'params': 'max_results' must be between 10 and 100"}}
 
         response = requests.request('GET', url, headers=headers, params=params)
         return response.json()

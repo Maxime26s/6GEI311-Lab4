@@ -165,6 +165,14 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'url': 'url' must not be empty")
 
+    def test_no_params(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        params = None
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'params': 'params' must not be None")
+
     def test_request_less_than_10_max_result(self):
         self.request = requests.request
         requests.request = MagicMock(
@@ -172,9 +180,8 @@ class TestTwitterAPI(unittest.TestCase):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url("data", 9)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
-        print(json_response)
         self.assertEqual(json_response['error']['message'],
-                         "Invalid 'max_results': 'max_results' must be between 10 and 100")
+                         "Invalid 'params': 'max_results' must be between 10 and 100")
         requests.request = self.request
 
     def test_request_more_than_100_max_result(self):
@@ -185,7 +192,7 @@ class TestTwitterAPI(unittest.TestCase):
         url, params = TwitterAPI.create_twitter_url("data", 101)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
-                         "Invalid 'max_results': 'max_results' must be between 10 and 100")
+                         "Invalid 'params': 'max_results' must be between 10 and 100")
         requests.request = self.request
 
 

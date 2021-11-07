@@ -31,14 +31,19 @@ class TwitterAPI:
             return {'error': {'message': "Invalid 'headers': 'headers' must not be empty"}}
         if type(headers) is not dict:
             return {'error': {'message': "Invalid 'headers': 'headers' must not be a dictionary"}}
+
         if headers['Authorization'] == None:
             return {'error': {'message': "Invalid 'headers': 'Authorization' must not be None"}}
         if type(headers['Authorization']) is not str:
             return {'error': {'message': "Invalid 'headers': 'Authorization' must be a string"}}
         if len(headers['Authorization']) <= 7:
             return {'error': {'message': "Invalid 'headers': 'Authorization' must have a bearer token"}}
+
         if params['max_results'] < 10 or params['max_results'] > 100:
             return {'error': {'message': "Invalid 'max_results': 'max_results' must be between 10 and 100"}}
+
+        if url == None:
+            return {'error': {'message': "Invalid 'url': 'url' must not be None"}}
         if url == "":
             return {'error': {'message': "Invalid 'url': 'url' must not be empty"}}
         response = requests.request('GET', url, headers=headers, params=params)

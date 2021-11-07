@@ -61,6 +61,8 @@ class TwitterAPI:
         if params['query'] == "":
             return {'error': {'message': "Invalid 'params': 'query' must not be empty"}}
 
+        if params['max_results'] == None:
+            return {'error': {'message': "Invalid 'params': 'max_results' must not be None"}}
         if params['max_results'] < 10 or params['max_results'] > 100:
             return {'error': {'message': "Invalid 'params': 'max_results' must be between 10 and 100"}}
 

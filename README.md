@@ -7,8 +7,8 @@ Python 3.9
 
 ## Installation
 
-S'assurer d'avoir toutes les dépendances
-Si nécessaire, utiliser un environnement virtuel
+- S'assurer d'avoir toutes les dépendances
+- Si nécessaire, utiliser un environnement virtuel
 
 ## Utilisation
 

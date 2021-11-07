@@ -184,21 +184,21 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'params': 'params' must be a dictionary")
 
-    def test_no_keyword(self):
+    def test_no_query(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url("data", 10)
-        params['keyword'] = None
+        params['query'] = None
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
-                         "Invalid 'params': 'keyword' must not be None")
+                         "Invalid 'params': 'query' must not be None")
 
-    def test_keyword_is_string(self):
+    def test_query_is_string(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url("data", 10)
-        params['keyword'] = 0
+        params['query'] = 0
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
-                         "Invalid 'params': 'keyword' must be a string")
+                         "Invalid 'params': 'query' must be a string")
 
     def test_request_less_than_10_max_result(self):
         self.request = requests.request

@@ -135,13 +135,21 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'headers': 'headers' must not be empty")
 
-    def test_no_bearer_token(self):
+    def test_empty_bearer_token(self):
         BEARER_TOKEN = ""
         headers = {'Authorization': f'Bearer {BEARER_TOKEN}'}
         url, params = TwitterAPI.create_twitter_url("data", 10)
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'headers': 'headers' must have a bearer token")
+
+    def test_empty_url(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        url = ""
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'url': 'url' must not be empty")
 
 
 if __name__ == '__main__':

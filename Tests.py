@@ -192,6 +192,14 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'params': 'keyword' must not be None")
 
+    def test_keyword_is_string(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        params['keyword'] = 0
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'params': 'keyword' must be a string")
+
     def test_request_less_than_10_max_result(self):
         self.request = requests.request
         requests.request = MagicMock(

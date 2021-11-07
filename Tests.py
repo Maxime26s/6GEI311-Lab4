@@ -105,6 +105,58 @@ class TestServer(unittest.TestCase):
 
 
 class TestTwitterAPI(unittest.TestCase):
+    def test_request_no_header(self):
+        headers = None
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'headers': 'headers' must not be empty")
+
+    def test_header_is_dictionary(self):
+        headers = "not a dictionary"
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'headers': 'headers' must not be a dictionary")
+
+    def test_header_no_authorization(self):
+        headers = {'Authorization': None}
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'headers': 'Authorization' must not be None")
+
+    def test_header_authorization_is_string(self):
+        headers = {'Authorization': 0}
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'headers': 'Authorization' must be a string")
+
+    def test_header_empty_bearer_token(self):
+        BEARER_TOKEN = ""
+        headers = {'Authorization': f'Bearer {BEARER_TOKEN}'}
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'headers': 'Authorization' must have a bearer token")
+
+    def test_no_url(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        url = None
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'url': 'url' must not be None")
+
+    def test_empty_url(self):
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        url = ""
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'url': 'url' must not be empty")
+
     def test_request_less_than_10_max_result(self):
         self.request = requests.request
         requests.request = MagicMock(
@@ -127,50 +179,6 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'max_results': 'max_results' must be between 10 and 100")
         requests.request = self.request
-
-    def test_request_no_header(self):
-        headers = None
-        url, params = TwitterAPI.create_twitter_url("data", 10)
-        json_response = TwitterAPI.query_twitter_api(url, headers, params)
-        self.assertEqual(json_response['error']['message'],
-                         "Invalid 'headers': 'headers' must not be empty")
-
-    def test_header_is_dictionary(self):
-        headers = "not a dictionary"
-        url, params = TwitterAPI.create_twitter_url("data", 10)
-        json_response = TwitterAPI.query_twitter_api(url, headers, params)
-        self.assertEqual(json_response['error']['message'],
-                         "Invalid 'headers': 'headers' must not be a dictionary")
-
-    def test_header_empty_bearer_token(self):
-        BEARER_TOKEN = ""
-        headers = {'Authorization': f'Bearer {BEARER_TOKEN}'}
-        url, params = TwitterAPI.create_twitter_url("data", 10)
-        json_response = TwitterAPI.query_twitter_api(url, headers, params)
-        self.assertEqual(json_response['error']['message'],
-                         "Invalid 'headers': 'Authorization' must have a bearer token")
-
-    def test_header_no_authorization(self):
-        headers = {'Authorization': None}
-        url, params = TwitterAPI.create_twitter_url("data", 10)
-        json_response = TwitterAPI.query_twitter_api(url, headers, params)
-        self.assertEqual(json_response['error']['message'],
-                         "Invalid 'headers': 'Authorization' must not be None")
-
-    def test_header_authorization_is_string(self):
-        headers = {'Authorization': 0}
-        url, params = TwitterAPI.create_twitter_url("data", 10)
-        json_response = TwitterAPI.query_twitter_api(url, headers, params)
-        self.assertEqual(json_response['error']['message'],
-                         "Invalid 'headers': 'Authorization' must be a string")
-
-    def test_empty_url(self):
-        headers = TwitterAPI.create_twitter_headers()
-        url, params = TwitterAPI.create_twitter_url("data", 10)
-        url = ""
-        json_response = TwitterAPI.query_twitter_api(url, headers, params)
-        self.assertEqual(json_response['error']['message'],
-                         "Invalid 'url': 'url' must not be empty")
 
 
 if __name__ == '__main__':

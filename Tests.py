@@ -135,6 +135,13 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'headers': 'headers' must not be empty")
 
+    def test_header_is_dictionary(self):
+        headers = "not a dictionary"
+        url, params = TwitterAPI.create_twitter_url("data", 10)
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response['error']['message'],
+                         "Invalid 'headers': 'headers' must not be a dictionary")
+
     def test_empty_bearer_token(self):
         BEARER_TOKEN = ""
         headers = {'Authorization': f'Bearer {BEARER_TOKEN}'}

@@ -57,7 +57,7 @@ class Lab4HTTPRequestHandler(SimpleHTTPRequestHandler):
             except:
                 print("Invalid json returned")
         else:
-            print("No data requested")
+            print("No data requested.")
 
         # Assume that right here, we load the tweets from a SQL database
         all_tweets = self.db.load_tweets()

@@ -80,7 +80,7 @@ class TestServer(unittest.TestCase):
 
     def test_invalid_json_data_returned(self):
         TwitterAPI.query_twitter_api = Mock(
-            return_value="{'errors': [{'parameters': {'query': ['']}, 'message': \"Invalid 'query': ''. 'query' must be a non-empty string\"}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'}")
+            return_value={'errors': [{'parameters': {'query': ['']}, 'message': "Invalid 'query': ''. 'query' must be a non-empty string"}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'})
         self.server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
         self.server.handler.path = "/queryTwitter"
         self.server.handler.do_GET()
@@ -88,7 +88,7 @@ class TestServer(unittest.TestCase):
 
     def test_search_empty_query(self):
         TwitterAPI.query_twitter_api = Mock(
-            return_value="{'errors': [{'parameters': {'query': ['']}, 'message': \"Invalid 'query': ''. 'query' must be a non-empty string\"}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'}")
+            return_value={'errors': [{'parameters': {'query': ['']}, 'message': "Invalid 'query': ''. 'query' must be a non-empty string"}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'})
         self.server = MockServer(('0.0.0.0', 8888), Lab4HTTPRequestHandler)
         self.server.handler.path = "/queryTwitter?query="
         self.server.handler.do_GET()
@@ -96,7 +96,14 @@ class TestServer(unittest.TestCase):
 
 
 class TestTwitterAPI(unittest.TestCase):
-    pass
+    def test_request_less_than_10_max_result(self):
+        TwitterAPI.query_twitter_api = Mock(
+            return_value={'errors': [{'parameters': {'max_results': ['9']}, 'message': 'The `max_results` query parameter value [9] is not between 10 and 100'}], 'title': 'Invalid Request', 'detail': 'One or more parameters to your request was invalid.', 'type': 'https://api.twitter.com/2/problems/invalid-request'})
+        headers = TwitterAPI.create_twitter_headers()
+        url, params = TwitterAPI.create_twitter_url("data", 9)
+        json_response = TwitterAPI.query_twitter_api(url, headers, params)
+        self.assertEqual(json_response["error"]["message"],
+                         "Invalid 'max_results: 'max_results' must be between 10 and 100")
 
 
 if __name__ == '__main__':

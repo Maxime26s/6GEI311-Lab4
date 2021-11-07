@@ -107,6 +107,7 @@ class TestTwitterAPI(unittest.TestCase):
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'max_results: 'max_results' must be between 10 and 100")
+        requests.request.reset_mock()
 
     def test_request_more_than_100_max_result(self):
         requests.request = Mock(
@@ -116,6 +117,7 @@ class TestTwitterAPI(unittest.TestCase):
         json_response = TwitterAPI.query_twitter_api(url, headers, params)
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'max_results: 'max_results' must be between 10 and 100")
+        requests.request.reset_mock()
 
 
 if __name__ == '__main__':

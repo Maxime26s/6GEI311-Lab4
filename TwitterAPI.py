@@ -51,6 +51,8 @@ class TwitterAPI:
         # params verifications
         if params == None:
             return {'error': {'message': "Invalid 'params': 'params' must not be None"}}
+        if type(params) is not dict:
+            return {'error': {'message': "Invalid 'params': 'params' must be a dictionary"}}
         if params['max_results'] < 10 or params['max_results'] > 100:
             return {'error': {'message': "Invalid 'params': 'max_results' must be between 10 and 100"}}
 

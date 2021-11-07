@@ -105,6 +105,7 @@ class TestServer(unittest.TestCase):
 
 
 class TestTwitterAPI(unittest.TestCase):
+    # header tests
     def test_request_no_header(self):
         headers = None
         url, params = TwitterAPI.create_twitter_url("data", 10)
@@ -141,6 +142,7 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'headers': 'Authorization' must have a bearer token")
 
+    # url tests
     def test_no_url(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url("data", 10)
@@ -165,6 +167,7 @@ class TestTwitterAPI(unittest.TestCase):
         self.assertEqual(json_response['error']['message'],
                          "Invalid 'url': 'url' must not be empty")
 
+    # params tests
     def test_no_params(self):
         headers = TwitterAPI.create_twitter_headers()
         url, params = TwitterAPI.create_twitter_url("data", 10)

@@ -22,5 +22,8 @@ Programme:
 Tests:
 - Lancer le fichier Tests.py
 
+## Rapport
+Voir "Rapport Laboratoire 4.pdf"
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

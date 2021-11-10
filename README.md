@@ -9,6 +9,7 @@ Python 3.9
 
 - S'assurer d'avoir toutes les dépendances
 - Si nécessaire, utiliser un environnement virtuel
+- Utiliser la commande "pip install -r requirements.txt" pour installer les packages nécessaires
 
 ## Utilisation
 
